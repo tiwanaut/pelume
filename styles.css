@@ -90,26 +90,68 @@ a.plain {
 
 .back { margin-top: 3.2em; }
 
-/* Theme toggle */
+/* Theme toggle — fixed top right */
 .theme {
+  position: fixed;
+  top: clamp(12px, 2.4vh, 28px);
+  right: clamp(12px, 2.4vw, 28px);
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   appearance: none;
   background: none;
   border: 0;
-  padding: 0;
-  margin-top: 4em;
-  font: inherit;
+  border-radius: 8px;
   color: inherit;
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  opacity: 0.55;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
 }
 
-.theme:hover { opacity: 1; }
+.theme:hover {
+  opacity: 1;
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+}
 
 .theme:focus-visible {
   outline: 2px solid var(--ink);
-  outline-offset: 3px;
+  outline-offset: 2px;
+}
+
+.theme .icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Show the icon for the theme the button switches to */
+.icon-sun { display: none; }
+.icon-moon { display: block; }
+
+:root[data-theme="dark"] .icon-sun { display: block; }
+:root[data-theme="dark"] .icon-moon { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-sun { display: block; }
+  :root:not([data-theme="light"]) .icon-moon { display: none; }
+}
+
+:root[data-theme="light"] .icon-sun { display: none; }
+:root[data-theme="light"] .icon-moon { display: block; }
+
+@media (max-width: 600px) {
+  .theme {
+    width: 36px;
+    height: 36px;
+  }
+  .theme .icon {
+    width: 17px;
+    height: 17px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
