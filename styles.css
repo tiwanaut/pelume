@@ -72,7 +72,19 @@ a:focus-visible {
   border-radius: 2px;
 }
 
-a.plain { text-decoration: none; }
+/* Emoji links: no underline, opacity instead of a decoration change.
+   app.js adds .plain to any link whose text is emoji only. */
+a.plain,
+.back a {
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+a.plain:hover,
+.back a:hover {
+  text-decoration: none;
+  opacity: 0.6;
+}
 
 .page h2 {
   font-size: 1em;
