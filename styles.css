@@ -48,18 +48,17 @@ main {
   padding-block: clamp(80px, 16vh, 200px) clamp(64px, 10vh, 120px);
 }
 
+/* Paperclip artwork. Colours live inside paperclips.svg. */
+.clip {
+  width: clamp(56px, 7vw, 76px);
+  height: auto;
+  display: block;
+}
+
 .mark {
   font-size: clamp(48px, 6vw, 64px);
   line-height: 1;
   margin: 0 0 clamp(40px, 6vh, 72px);
-}
-
-/* Paperclip mark, drawn rather than emoji so it can be coloured */
-.clip {
-  width: clamp(48px, 6vw, 64px);
-  height: clamp(48px, 6vw, 64px);
-  display: block;
-  color: var(--red);
 }
 
 p { margin: 0 0 1.5em; }
