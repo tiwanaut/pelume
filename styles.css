@@ -16,12 +16,6 @@
   --paper: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --ink: #fff;
-    --paper: #000;
-  }
-}
 
 * { box-sizing: border-box; }
 
@@ -159,12 +153,6 @@ a.plain:hover,
 :root[data-theme="dark"] .knob { transform: translateX(22px); }
 :root[data-theme="dark"] .icon-sun { display: none; }
 :root[data-theme="dark"] .icon-moon { display: block; }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .knob { transform: translateX(22px); }
-  :root:not([data-theme="light"]) .icon-sun { display: none; }
-  :root:not([data-theme="light"]) .icon-moon { display: block; }
-}
 
 :root[data-theme="light"] .knob { transform: translateX(0); }
 :root[data-theme="light"] .icon-sun { display: block; }
