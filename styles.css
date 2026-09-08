@@ -1,0 +1,77 @@
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco,
+    "Cascadia Mono", "Roboto Mono", "DejaVu Sans Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: clamp(13px, 0.55vw + 11px, 15px);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  /* fluid indent: hugs the left edge on phones, deep indent on desktop */
+  padding-inline: clamp(24px, 14vw, 228px);
+  padding-block: clamp(72px, 13vh, 190px) clamp(64px, 10vh, 120px);
+  max-width: 1100px;
+}
+
+.mark {
+  font-size: clamp(44px, 6vw, 64px);
+  line-height: 1;
+  margin: 0 0 clamp(48px, 7vh, 88px);
+}
+
+p {
+  margin: 0 0 1.55em;
+  max-width: 68ch;
+}
+
+p:last-child { margin-bottom: 0; }
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+
+a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* About page */
+.page h2 {
+  font-size: 1em;
+  font-weight: 700;
+  margin: 2.6em 0 0.9em;
+}
+
+.back { margin-top: 3.2em; }
+
+/* Dark mode: straight inversion, pure white on pure black */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #fff;
+    --paper: #000;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
