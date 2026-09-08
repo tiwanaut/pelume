@@ -5,9 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>About — Pelume</title>
-<meta name="description" content="We're building marketplaces shaping the future of how we live and work. Coming soon.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%87%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<meta name="description" content="We're building the marketplaces shaping the future of how we live and work. Coming soon.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>%F0%9F%96%87</text></svg>">
 <link rel="stylesheet" href="/styles.css">
+<script>
+  (function () {
+    var t = localStorage.getItem("theme");
+    if (t) document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
 </head>
 <body>
   <main class="page">
@@ -31,7 +37,10 @@
 
     <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus.</p>
 
-    <p class="back"><a href="/">← Home</a> · <a href="mailto:hello@pelume.com">👋</a></p>
+    <p class="back"><a href="/">← pelume.com</a> · <a class="plain" href="mailto:hello@pelume.com" aria-label="Email hello@pelume.com">👋</a></p>
+
+    <button class="theme" type="button" data-theme-toggle>Switch theme</button>
   </main>
+  <script src="/theme.js"></script>
 </body>
 </html>
