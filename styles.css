@@ -148,7 +148,6 @@ a.plain:hover,
   width: 12px;
   height: 12px;
   display: block;
-  stroke: var(--red);
 }
 
 .icon-sun { display: block; }
