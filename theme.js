@@ -9,20 +9,19 @@
     return root.getAttribute("data-theme") || (media.matches ? "dark" : "light");
   }
 
-  function label() {
-    button.setAttribute(
-      "aria-label",
-      current() === "dark" ? "Switch to light mode" : "Switch to dark mode"
-    );
+  function sync() {
+    var dark = current() === "dark";
+    button.setAttribute("aria-checked", dark ? "true" : "false");
+    button.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
   }
 
   button.addEventListener("click", function () {
     var next = current() === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
-    label();
+    sync();
   });
 
-  media.addEventListener("change", label);
-  label();
+  media.addEventListener("change", sync);
+  sync();
 })();
