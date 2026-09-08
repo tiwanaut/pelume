@@ -1,23 +1,20 @@
 :root {
   --ink: #000;
   --paper: #fff;
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco,
-    "Cascadia Mono", "Roboto Mono", "DejaVu Sans Mono", "Courier New", monospace;
+  --sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 }
 
-/* Dark: straight inversion, #fff on #000 */
 :root[data-theme="dark"] {
   --ink: #fff;
   --paper: #000;
 }
 
-/* Light: forced back, for people whose OS is dark */
 :root[data-theme="light"] {
   --ink: #000;
   --paper: #fff;
 }
 
-/* No explicit choice stored — follow the operating system */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --ink: #fff;
@@ -27,45 +24,44 @@
 
 * { box-sizing: border-box; }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--mono);
-  font-size: clamp(14px, 0.35vw + 12.4px, 16px);
-  line-height: 1.75;
+  font-family: var(--sans);
+  font-size: clamp(16px, 0.3vw + 15px, 18px);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Centred column, left-aligned text */
 main {
-  max-width: 1200px;
+  max-width: 720px;
   margin-inline: auto;
-  padding-inline: clamp(24px, 7vw, 112px);
-  padding-block: clamp(72px, 13vh, 190px) clamp(64px, 10vh, 120px);
+  padding-inline: 24px;
+  padding-block: clamp(80px, 16vh, 200px) clamp(64px, 10vh, 120px);
 }
 
 .mark {
-  font-size: clamp(48px, 6vw, 68px);
+  font-size: clamp(48px, 6vw, 64px);
   line-height: 1;
-  margin: 0 0 clamp(48px, 7vh, 88px);
+  margin: 0 0 clamp(40px, 6vh, 72px);
 }
 
-p {
-  margin: 0 0 1.55em;
-  max-width: 92ch;
-}
+p { margin: 0 0 1.5em; }
 
 p:last-child { margin-bottom: 0; }
 
 a {
   color: inherit;
   text-decoration: underline;
-  text-underline-offset: 2px;
-  overflow-wrap: anywhere;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
 }
 
 a:hover { text-decoration-thickness: 2px; }
@@ -73,87 +69,84 @@ a:hover { text-decoration-thickness: 2px; }
 a:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
+  border-radius: 2px;
 }
 
-/* Emoji-only links: no underline */
-a.plain {
-  text-decoration: none;
-  overflow-wrap: normal;
-}
+a.plain { text-decoration: none; }
 
-/* About page */
 .page h2 {
   font-size: 1em;
-  font-weight: 700;
-  margin: 2.6em 0 0.9em;
+  font-weight: 600;
+  margin: 2.4em 0 0.8em;
 }
 
-.back { margin-top: 3.2em; }
+.back { margin-top: 3em; }
 
-/* Theme toggle — fixed top right */
+/* Pill toggle, top right */
 .theme {
   position: fixed;
-  top: clamp(12px, 2.4vh, 28px);
-  right: clamp(12px, 2.4vw, 28px);
+  top: clamp(16px, 2.6vh, 28px);
+  right: clamp(16px, 2.6vw, 28px);
   z-index: 10;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
+  width: 52px;
+  height: 28px;
+  padding: 3px;
   appearance: none;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: 999px;
   background: none;
-  border: 0;
-  border-radius: 8px;
   color: inherit;
   cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.2s ease;
 }
 
 .theme:hover {
-  opacity: 1;
-  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  border-color: color-mix(in srgb, currentColor 45%, transparent);
 }
 
 .theme:focus-visible {
   outline: 2px solid var(--ink);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-.theme .icon {
-  width: 18px;
-  height: 18px;
+.knob {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateX(0);
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.knob svg {
+  width: 12px;
+  height: 12px;
   display: block;
 }
 
-/* Show the icon for the theme the button switches to */
-.icon-sun { display: none; }
-.icon-moon { display: block; }
+.icon-sun { display: block; }
+.icon-moon { display: none; }
 
-:root[data-theme="dark"] .icon-sun { display: block; }
-:root[data-theme="dark"] .icon-moon { display: none; }
+/* Dark: knob slides right, moon shows */
+:root[data-theme="dark"] .knob { transform: translateX(22px); }
+:root[data-theme="dark"] .icon-sun { display: none; }
+:root[data-theme="dark"] .icon-moon { display: block; }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .icon-sun { display: block; }
-  :root:not([data-theme="light"]) .icon-moon { display: none; }
+  :root:not([data-theme="light"]) .knob { transform: translateX(22px); }
+  :root:not([data-theme="light"]) .icon-sun { display: none; }
+  :root:not([data-theme="light"]) .icon-moon { display: block; }
 }
 
-:root[data-theme="light"] .icon-sun { display: none; }
-:root[data-theme="light"] .icon-moon { display: block; }
-
-@media (max-width: 600px) {
-  .theme {
-    width: 36px;
-    height: 36px;
-  }
-  .theme .icon {
-    width: 17px;
-    height: 17px;
-  }
-}
+:root[data-theme="light"] .knob { transform: translateX(0); }
+:root[data-theme="light"] .icon-sun { display: block; }
+:root[data-theme="light"] .icon-moon { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+  * { transition: none !important; animation: none !important; }
 }
