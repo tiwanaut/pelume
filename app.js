@@ -3,10 +3,8 @@
 
   /* Theme toggle */
   var button = document.querySelector("[data-theme-toggle]");
-  var media = window.matchMedia("(prefers-color-scheme: dark)");
-
   function current() {
-    return root.getAttribute("data-theme") || (media.matches ? "dark" : "light");
+    return root.getAttribute("data-theme") === "dark" ? "dark" : "light";
   }
 
   function sync() {
@@ -23,7 +21,6 @@
       localStorage.setItem("theme", next);
       sync();
     });
-    media.addEventListener("change", sync);
     sync();
   }
 
