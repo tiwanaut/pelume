@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <title>Pelume</title>
 <meta name="description" content="We're building the marketplaces shaping the future of how we live and work. Coming soon.">
 <meta property="og:title" content="Pelume">
@@ -19,7 +19,7 @@
 <script>
   (function () {
     var t = localStorage.getItem("theme");
-    if (t) document.documentElement.setAttribute("data-theme", t);
+    document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
   })();
 </script>
 </head>
