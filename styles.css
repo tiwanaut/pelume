@@ -7,6 +7,7 @@
   --ink: #000;
   --dim: rgba(0, 0, 0, 0.13);
   --line: rgba(0, 0, 0, 0.5);
+  --hair: 1px;
   --accent: #d40000;
 
   --sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -260,11 +261,11 @@ a.plain:hover {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--line);
+  border-top: var(--hair) solid var(--line);
 }
 
 .posts li {
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--hair) solid var(--line);
 }
 
 .posts a {
@@ -316,6 +317,11 @@ a.plain:hover {
 /* ---------- Phone: the document scrolls, nothing is pinned but the bar --- */
 
 @media (max-width: 720px) {
+  /* Hairlines are halved here: at phone text sizes a full pixel reads heavy. */
+  :root {
+    --hair: 0.5px;
+  }
+
   /* The shell still fills the screen, so a short page keeps its footer on the
      bottom edge instead of stopping halfway down. */
   .shell {
@@ -344,9 +350,14 @@ a.plain:hover {
     min-height: 52vh;
   }
 
-  /* The rule lines up with the text rather than bleeding to the screen edge. */
+  /* Footer stacks and centres: tagline, then the paperclip, then the nav.
+     The rule lines up with the text rather than bleeding to the screen edge. */
   .foot {
     position: relative;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: clamp(14px, 2.5vh, 22px);
     padding-top: clamp(24px, 5vh, 40px);
   }
 
@@ -356,34 +367,29 @@ a.plain:hover {
     top: 0;
     left: var(--pad);
     right: var(--pad);
-    height: 1px;
+    height: var(--hair);
     background: var(--line);
   }
 
-  .posts a {
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
-}
-
-@media (max-width: 520px) {
-  /* Paperclip and nav share a line, so the clip isn't stranded on its own. */
-  .foot {
-    grid-template-columns: auto 1fr;
-  }
-
-  .foot-lede {
-    grid-column: 1 / -1;
-  }
-
-  .home {
+  .foot-lede,
+  .home,
+  .nav {
     grid-column: 1;
   }
 
+  .foot-lede {
+    max-width: 32ch;
+  }
+
   .nav {
-    grid-column: 2;
-    justify-content: flex-start;
-    gap: 0.4rem 1.25rem;
+    justify-content: center;
+    gap: 0.4rem 1.5rem;
+  }
+
+  /* Date beside the title, as on wider screens. */
+  .posts a {
+    grid-template-columns: 84px 1fr;
+    gap: 0 16px;
   }
 }
 
