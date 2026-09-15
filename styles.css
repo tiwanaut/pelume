@@ -6,7 +6,7 @@
   --paper: #fff;
   --ink: #000;
   --dim: rgba(0, 0, 0, 0.13);
-  --line: rgba(0, 0, 0, 0.16);
+  --line: var(--ink);
   --accent: #d40000;
 
   --sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -277,7 +277,6 @@ a.plain:hover {
 
 .posts time {
   font-size: var(--nav);
-  color: rgba(0, 0, 0, 0.45);
   font-variant-numeric: tabular-nums;
 }
 
