@@ -282,7 +282,7 @@ a.plain:hover {
 }
 
 .posts span {
-  font-size: clamp(1rem, 0.8vw, 1.125rem);
+  font-size: clamp(0.9rem, 0.625vw, 1rem);
 }
 
 .posts a:hover span {
