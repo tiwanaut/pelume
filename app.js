@@ -1,47 +1,15 @@
-/* Pelume — theme toggle, pixel-dissolve mark, decoding letter text.
-   Everything here is progressive enhancement: the page reads fine without it. */
+/* Pelume — the paperclip mark, the scroll-driven reveal on the letter, and the
+   emoji link tidy-up. All progressive enhancement: the pages read fine without
+   any of it. */
 
 (function () {
   "use strict";
 
-  var root = document.documentElement;
   var reduced =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------------------------------------------------------------- theme */
-
-  var button = document.querySelector("[data-theme-toggle]");
-
-  function currentTheme() {
-    return root.getAttribute("data-theme") === "light" ? "light" : "dark";
-  }
-
-  function syncToggle() {
-    if (!button) return;
-    var light = currentTheme() === "light";
-    button.setAttribute("aria-checked", light ? "false" : "true");
-    button.setAttribute(
-      "aria-label",
-      light ? "Switch to dark mode" : "Switch to light mode"
-    );
-  }
-
-  if (button) {
-    button.addEventListener("click", function () {
-      var next = currentTheme() === "light" ? "dark" : "light";
-      root.setAttribute("data-theme", next);
-      try {
-        localStorage.setItem("theme", next);
-      } catch (e) {
-        /* private browsing */
-      }
-      syncToggle();
-    });
-    syncToggle();
-  }
-
-  /* ----------------------------------------------------------- the mark */
+  /* ------------------------------------------------------------- the mark */
 
   var host = document.querySelector("[data-clip]");
   if (host && !reduced && window.requestAnimationFrame) {
@@ -58,7 +26,7 @@
     canvas.setAttribute("aria-hidden", "true");
     var ctx = canvas.getContext("2d");
 
-    var source = null; // decoded SVG as an Image
+    var source = null;
     var swatch = null; // Uint8ClampedArray, GRID * GRID * 4
     var field = new Float32Array(GRID * GRID);
     var settled = 0; // baseline dissolve, toggled by click
@@ -70,7 +38,7 @@
 
     loadSource(function (image) {
       source = image;
-      sample(image);
+      if (!sample(image)) return; // canvas is tainted, keep the plain image
       host.appendChild(canvas);
       host.classList.add("is-live");
       resize();
@@ -78,9 +46,25 @@
       bind();
     });
 
-    /* Read the SVG as text and hand it to an Image as a data URL. Keeps the
-       canvas untainted everywhere, and lets us drop the file's XML prolog. */
+    /* Read the SVG as text and hand it to an Image as a data URL, which keeps
+       the canvas readable. Over file:// the fetch is blocked, so fall back to
+       the <img> itself and let sample() decide whether it can be read. */
     function loadSource(done) {
+      var direct = function () {
+        if (img.complete && img.naturalWidth) {
+          done(img);
+        } else {
+          img.addEventListener("load", function () {
+            done(img);
+          });
+        }
+      };
+
+      if (!window.fetch || location.protocol === "file:") {
+        direct();
+        return;
+      }
+
       fetch(img.currentSrc || img.src)
         .then(function (r) {
           return r.text();
@@ -91,11 +75,11 @@
           image.onload = function () {
             done(image);
           };
-          image.onerror = function () {};
+          image.onerror = direct;
           image.src =
             "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
         })
-        .catch(function () {});
+        .catch(direct);
     }
 
     function sample(image) {
@@ -103,7 +87,12 @@
       off.width = off.height = GRID;
       var octx = off.getContext("2d");
       octx.drawImage(image, 0, 0, GRID, GRID);
-      swatch = octx.getImageData(0, 0, GRID, GRID).data;
+      try {
+        swatch = octx.getImageData(0, 0, GRID, GRID).data;
+      } catch (e) {
+        return false;
+      }
+      return true;
     }
 
     function resize() {
@@ -220,71 +209,122 @@
     }
   }
 
-  /* ------------------------------------------------------- letter decode */
+  /* ------------------------------------------------ letter: scroll reveal */
 
-  var lines = [].slice.call(document.querySelectorAll("[data-decode]"));
-  if (lines.length && !reduced && window.IntersectionObserver) {
-    initDecode(lines);
-  }
+  var paras = [].slice.call(document.querySelectorAll("[data-reveal]"));
+  if (paras.length) initReveal(paras);
 
-  function initDecode(lines) {
-    var GLYPHS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    var PER_CHAR = 9; // ms of runway per character
-    var MAX = 1400;
-    var queued = 0;
+  function initReveal(paras) {
+    var scroller = document.querySelector(".scroll");
+    var MIN = 0.13; // starting ink, matches --dim
+    var BAND = 110; // px over which a word comes up to full black
+    var MARK = 0.66; // reveal line, as a fraction of the visible height
 
-    lines.forEach(function (el) {
-      el.dataset.final = el.textContent;
-      el.textContent = mask(el.dataset.final, 0);
+    var words = [];
+    var tops = [];
+    var ticking = false;
+
+    paras.forEach(split);
+
+    if (!words.length) return;
+
+    if (reduced) {
+      words.forEach(function (w) {
+        w.style.color = "";
+      });
+      return;
+    }
+
+    measure();
+    paint();
+
+    window.addEventListener("resize", function () {
+      measure();
+      paint();
     });
+    window.addEventListener("scroll", request, { passive: true });
+    if (scroller) scroller.addEventListener("scroll", request, { passive: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        measure();
+        paint();
+      });
+    }
 
-    var watcher = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          watcher.unobserve(entry.target);
-          var delay = queued * 140;
-          queued++;
-          setTimeout(function () {
-            run(entry.target);
-          }, delay);
-        });
-      },
-      { rootMargin: "0px 0px -12% 0px" }
-    );
+    /* Wrap every word so each can carry its own ink level. */
+    function split(p) {
+      var text = p.textContent;
+      var frag = document.createDocumentFragment();
 
-    lines.forEach(function (el) {
-      watcher.observe(el);
-    });
-
-    function mask(text, progress) {
-      var cut = Math.floor(text.length * progress);
-      var out = "";
-      for (var i = 0; i < text.length; i++) {
-        var ch = text[i];
-        if (i < cut || !/[A-Za-z]/.test(ch)) {
-          out += ch;
-        } else {
-          out += GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      text.split(/(\s+)/).forEach(function (token) {
+        if (!token) return;
+        if (/^\s+$/.test(token)) {
+          frag.appendChild(document.createTextNode(token));
+          return;
         }
+        var span = document.createElement("span");
+        span.className = "word";
+        span.textContent = token;
+        frag.appendChild(span);
+        words.push(span);
+      });
+
+      p.textContent = "";
+      p.appendChild(frag);
+    }
+
+    /* Two scroll models: the inner container on desktop, the window on mobile
+       where the shell is allowed to grow. */
+    function usesContainer() {
+      return !!scroller && scroller.scrollHeight - scroller.clientHeight > 4;
+    }
+
+    function measure() {
+      var container = usesContainer();
+      var base = container ? scroller.getBoundingClientRect().top : 0;
+      var offset = container ? scroller.scrollTop : window.scrollY;
+
+      tops = words.map(function (w) {
+        return w.getBoundingClientRect().top - base + offset;
+      });
+    }
+
+    function paint() {
+      var container = usesContainer();
+      var offset = container ? scroller.scrollTop : window.scrollY;
+      var height = container ? scroller.clientHeight : window.innerHeight;
+      var reach = offset + height * MARK;
+
+      /* Nothing to scroll through: show the letter in full. */
+      var still =
+        !container && document.documentElement.scrollHeight <= window.innerHeight + 4;
+
+      for (var i = 0; i < words.length; i++) {
+        var t = still ? 1 : (reach - tops[i]) / BAND;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        words[i].style.color = "rgba(0,0,0," + (MIN + (1 - MIN) * t).toFixed(3) + ")";
       }
-      return out;
     }
 
-    function run(el) {
-      var text = el.dataset.final;
-      var span = Math.min(text.length * PER_CHAR, MAX);
-      var start = performance.now();
-
-      (function tick(now) {
-        var progress = Math.min((now - start) / span, 1);
-        el.textContent = mask(text, progress);
-        if (progress < 1) {
-          requestAnimationFrame(tick);
-        } else {
-          el.textContent = text;
-        }
-      })(start);
+    function request() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        paint();
+      });
     }
   }
+
+  /* ------------------------------------------------------- emoji-only links */
+
+  var pictographic = /\p{Extended_Pictographic}/u;
+  var decorative = /^[\p{Extended_Pictographic}\p{Emoji_Component}\s\u200d\uFE0F\u2190-\u21FF\u00B7.,!?:;·—–-]*$/u;
+
+  Array.prototype.forEach.call(document.querySelectorAll("a"), function (a) {
+    var text = a.textContent.trim();
+    if (pictographic.test(text) && decorative.test(text)) {
+      a.classList.add("plain");
+    }
+  });
 })();
