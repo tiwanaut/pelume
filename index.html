@@ -3,45 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="light">
 <title>Pelume</title>
-<meta name="description" content="We're building marketplaces shaping the future of how we live and work.">
+<meta name="description" content="We're building the marketplaces shaping the future of how we live and work. Coming soon.">
 <meta property="og:title" content="Pelume">
-<meta property="og:description" content="We're building marketplaces shaping the future of how we live and work.">
+<meta property="og:description" content="We're building the marketplaces shaping the future of how we live and work. Coming soon.">
 <meta property="og:url" content="https://pelume.com">
 <meta property="og:type" content="website">
-<link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" href="/paperclips.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="paperclips.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">
-<script>
-  (function () {
-    var t = localStorage.getItem("theme");
-    document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
-  })();
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="shell">
 
     <header class="bar">
-      <span>What we're building and why</span>
-      <a href="/about">Read</a>
-      <button class="theme" type="button" data-theme-toggle role="switch" aria-checked="true" aria-label="Switch to light mode">
-        <span class="knob">
-          <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-          <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        </span>
-      </button>
+      <p><a href="about.html">Read</a> about what we're building and why.</p>
     </header>
 
     <div class="scroll">
       <main class="hero">
         <div class="mark" data-clip>
-          <img src="/paperclips.svg" width="160" height="160" alt="Pelume: three linked paperclips" fetchpriority="high">
+          <img src="paperclips.svg" width="160" height="160" alt="Pelume: three linked paperclips" fetchpriority="high">
         </div>
       </main>
     </div>
@@ -49,12 +36,11 @@
     <footer class="foot">
       <p class="foot-lede">We're building marketplaces shaping the future of how we live &amp; work.</p>
       <div class="foot-row">
-        <a class="wordmark" href="/" aria-label="Pelume home">
-          <img src="/paperclips.svg" width="22" height="22" alt="">
-          <b>Pelume</b>
+        <a class="home" href="index.html" aria-label="Pelume home">
+          <img src="paperclips.svg" width="28" height="28" alt="">
         </a>
         <nav class="nav" aria-label="Site">
-          <a href="/about">About</a>
+          <a href="about.html">About</a>
           <a href="mailto:hello@pelume.com">Contact</a>
           <a href="https://x.com/pelume" rel="me noopener">X</a>
           <a href="https://linkedin.com/pelume" rel="me noopener">LinkedIn</a>
@@ -63,6 +49,6 @@
     </footer>
 
   </div>
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
