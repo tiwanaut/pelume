@@ -14,7 +14,7 @@
 
   --measure: 62ch;
   --pad: clamp(18px, 4vw, 56px);
-  --nav: clamp(16px, 0.35vw + 15px, 18px);
+  --nav: clamp(14px, 0.3vw + 13.3px, 15.5px);
 }
 
 * {
