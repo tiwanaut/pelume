@@ -7,7 +7,7 @@
   --ink: #000;
   --dim: rgba(0, 0, 0, 0.13);
   --line: rgba(0, 0, 0, 0.5);
-  --hair: 1px;
+  --hair: 0.5px;
   --accent: #d40000;
 
   --sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
