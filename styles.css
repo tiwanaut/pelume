@@ -14,7 +14,7 @@
     Helvetica, Arial, sans-serif;
 
   --measure: 62ch;
-  --pad: clamp(24px, 4vw, 56px);
+  --pad: clamp(32px, 4vw, 56px);
   --nav: clamp(15px, 0.3vw + 14.3px, 16.5px);
 }
 
